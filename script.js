@@ -76,17 +76,29 @@ function switchCategory(category) {
     tabButtons.forEach(btn => btn.classList.remove('active'));
     document.querySelector(`[data-category="${category}"]`).classList.add('active');
     
-    // 淡出效果
-    menuGrid.style.opacity = '0';
-    menuGrid.style.transform = 'translateY(20px)';
+    // 加入淡出效果和加載狀態
+    menuGrid.classList.add('fade-out');
     
     setTimeout(() => {
+        // 顯示加載狀態
+        menuGrid.classList.add('loading');
+        
+        // 更新內容
         currentCategory = category;
         renderMenu(category);
         
-        // 淡入效果
-        menuGrid.style.opacity = '1';
-        menuGrid.style.transform = 'translateY(0)';
+        // 移除淡出效果，準備淡入
+        menuGrid.classList.remove('fade-out');
+        
+        // 短暫延遲後開始淡入動畫
+        setTimeout(() => {
+            menuGrid.classList.remove('loading');
+            menuGrid.classList.add('fade-in');
+            
+            // 平滑滾動到頂部
+            scrollToTop();
+        }, 100);
+        
     }, 300);
 }
 
@@ -96,44 +108,60 @@ function renderMenu(categoryId) {
     const category = menuData.categories?.find(cat => cat.id === categoryId);
     const drinks = category?.items || [];
     
-    menuGrid.innerHTML = drinks.map((drink, index) => `
-        <div class="drink-card fade-in" style="animation-delay: ${index * 0.1}s">
-            <div class="drink-image">
-                <img src="${drink.image}" alt="${drink.name}" loading="lazy">
-            </div>
-            <div class="drink-info">
-                <h3 class="drink-name">${drink.name}</h3>
-                <p class="drink-description">${drink.description}</p>
-                ${drink.tags ? `
-                    <div class="drink-tags">
-                        ${drink.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                    </div>
-                ` : ''}
-            </div>
-        </div>
-    `).join('');
+    // 先清空容器
+    menuGrid.innerHTML = '';
     
-    // 重新設置動畫
-    setupCardAnimations();
+    // 短暫延遲後開始渲染，避免閃爍
+    setTimeout(() => {
+        menuGrid.innerHTML = drinks.map((drink, index) => `
+            <div class="drink-card" style="animation-delay: ${index * 0.1}s">
+                <div class="drink-image">
+                    <img src="${drink.image}" alt="${drink.name}" loading="lazy">
+                </div>
+                <div class="drink-info">
+                    <h3 class="drink-name">${drink.name}</h3>
+                    <p class="drink-description">${drink.description}</p>
+                    ${drink.tags ? `
+                        <div class="drink-tags">
+                            ${drink.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `).join('');
+        
+        // 設置卡片動畫
+        setupCardAnimations();
+    }, 50);
 }
 
 // 設置卡片動畫
 function setupCardAnimations() {
     const cards = document.querySelectorAll('.drink-card');
-    cards.forEach((card, index) => {
+    
+    // 重置所有卡片狀態
+    cards.forEach(card => {
+        card.classList.remove('fade-in');
         card.style.opacity = '0';
         card.style.transform = 'translateY(30px)';
-        
+    });
+    
+    // 依序顯示卡片
+    cards.forEach((card, index) => {
         setTimeout(() => {
+            card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
             card.style.opacity = '1';
             card.style.transform = 'translateY(0)';
-        }, index * 100);
+            card.classList.add('fade-in');
+        }, index * 150);
     });
     
     // 重新設置滾動觀察器
-    if (window.observeCards) {
-        window.observeCards();
-    }
+    setTimeout(() => {
+        if (window.observeCards) {
+            window.observeCards();
+        }
+    }, cards.length * 150 + 100);
 }
 
 // 滾動動畫設置
