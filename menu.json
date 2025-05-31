@@ -1,0 +1,116 @@
+{
+  "categories": [
+    {
+      "id": "coffee",
+      "name": "咖啡",
+      "icon": "☕",
+      "items": [
+        {
+          "name": "招牌拿鐵",
+          "description": "使用精選阿拉比卡豆，搭配濃郁奶泡，口感順滑香醇",
+          "image": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&h=300&fit=crop&crop=center",
+          "tags": ["中焙", "牛奶", "溫熱"]
+        },
+        {
+          "name": "經典卡布奇諾",
+          "description": "義式濃縮搭配細緻奶泡，呈現完美的咖啡與奶香平衡",
+          "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop&crop=center",
+          "tags": ["中焙", "牛奶", "濃郁"]
+        },
+        {
+          "name": "純粹美式",
+          "description": "單純的義式濃縮加熱水，品味咖啡豆最原始的香味",
+          "image": "https://images.unsplash.com/photo-1561047029-3000c68339ca?w=400&h=300&fit=crop&crop=center",
+          "tags": ["中焙", "無奶", "純粹"]
+        },
+        {
+          "name": "冰滴咖啡",
+          "description": "12小時低溫萃取，口感純淨甘甜，回韻悠長",
+          "image": "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&h=300&fit=crop&crop=center",
+          "tags": ["淺焙", "冰飲", "甘甜"]
+        }
+      ]
+    },
+    {
+      "id": "tea",
+      "name": "茶",
+      "icon": "🍵",
+      "items": [
+        {
+          "name": "經典奶茶",
+          "description": "嚴選錫蘭紅茶搭配香濃鮮奶，溫潤甘甜的午後時光",
+          "image": "https://images.unsplash.com/photo-1594631661960-69a83bbb5ddc?w=400&h=300&fit=crop&crop=center",
+          "tags": ["含咖啡因", "牛奶", "甜味"]
+        },
+        {
+          "name": "茉莉花茶",
+          "description": "清香的茉莉花茶，淡雅花香與茶韻完美融合",
+          "image": "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop&crop=center",
+          "tags": ["含咖啡因", "花香", "清淡"]
+        },
+        {
+          "name": "烏龍茶",
+          "description": "台灣高山烏龍，清香回甘，展現茶葉的自然風味",
+          "image": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=400&h=300&fit=crop&crop=center",
+          "tags": ["含咖啡因", "回甘", "台灣"]
+        },
+        {
+          "name": "伯爵茶",
+          "description": "經典英式伯爵茶，柑橘香氣與茶香的完美平衡",
+          "image": "https://images.unsplash.com/photo-1597318882469-307d5b9a5eb5?w=400&h=300&fit=crop&crop=center",
+          "tags": ["含咖啡因", "柑橘", "英式"]
+        }
+      ]
+    },
+    {
+      "id": "milk",
+      "name": "奶",
+      "icon": "🥛",
+      "items": [
+        {
+          "name": "香草奶昔",
+          "description": "濃郁香草冰淇淋搭配新鮮牛奶，綿密順口的甜蜜滋味",
+          "image": "https://images.unsplash.com/photo-1541544181051-e46607bc22a4?w=400&h=300&fit=crop&crop=center",
+          "tags": ["無咖啡因", "香草", "甜品"]
+        },
+        {
+          "name": "草莓奶昔",
+          "description": "新鮮草莓與牛奶的完美結合，酸甜清香的夏日享受",
+          "image": "https://images.unsplash.com/photo-1563227812-0ea4c22e6cc8?w=400&h=300&fit=crop&crop=center",
+          "tags": ["無咖啡因", "水果", "清爽"]
+        },
+        {
+          "name": "巧克力奶昔",
+          "description": "比利時巧克力與濃郁牛奶的奢華組合，滿足所有甜食慾望",
+          "image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&crop=center",
+          "tags": ["無咖啡因", "巧克力", "濃郁"]
+        }
+      ]
+    },
+    {
+      "id": "alcohol",
+      "name": "酒",
+      "icon": "🍷",
+      "items": [
+        {
+          "name": "梅酒氣泡",
+          "description": "日式梅酒搭配氣泡水，微醺清爽的夜晚首選",
+          "image": "https://images.unsplash.com/photo-1544824284-d7cb9ec2cc5c?w=400&h=300&fit=crop&crop=center",
+          "tags": ["低酒精", "氣泡", "日式"]
+        },
+        {
+          "name": "水果調酒",
+          "description": "季節新鮮水果調製的清爽雞尾酒，色彩繽紛口感豐富",
+          "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop&crop=center",
+          "tags": ["調酒", "水果", "繽紛"]
+        },
+        {
+          "name": "清酒",
+          "description": "精選日本清酒，口感清冽甘甜，適合搭配輕食享用",
+          "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop&crop=center",
+          "tags": ["日本酒", "清冽", "傳統"]
+        }
+      ]
+    }
+  ]
+}
