@@ -5,6 +5,19 @@
     box-sizing: border-box;
 }
 
+/* 強制禁用深色模式 */
+:root {
+    color-scheme: light only;
+}
+
+html {
+    color-scheme: light;
+}
+
+body {
+    color-scheme: light;
+}
+
 :root {
     --primary-white: #ffffff;
     --soft-white: #fefefe;
@@ -29,11 +42,13 @@
 }
 
 body {
-    font-family: 'Noto Sans TC', 'Zen Maru Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Noto Sans TC', 'Zen Maru Gothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
     background-color: var(--primary-white);
     color: var(--text-primary);
     line-height: 1.6;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .container {
@@ -186,15 +201,33 @@ body {
 }
 
 .menu-grid {
+    /* Fallback for browsers that don't support CSS Grid */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    margin: -16px;
+    
+    /* Modern browsers with Grid support */
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 32px;
+    margin: 0;
+    
+    -webkit-transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 1;
+    -webkit-transform: translateY(0);
     transform: translateY(0);
     /* 桌面版硬體加速優化 */
     will-change: transform, opacity;
+    -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
+    -webkit-perspective: 1000px;
     perspective: 1000px;
 }
 
@@ -240,22 +273,41 @@ body {
 
 /* 飲品卡片 */
 .drink-card {
+    /* Flexbox fallback for IE10+ */
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 calc(50% - 32px);
+    flex: 0 0 calc(50% - 32px);
+    margin: 16px;
+    
+    /* Modern browsers */
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    margin: 0;
+    min-width: 300px;
+    
     background: var(--primary-white);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 12px var(--soft-shadow);
+    -webkit-box-shadow: 0 4px 16px rgba(107, 83, 68, 0.12), 0 2px 8px rgba(107, 83, 68, 0.08);
+    box-shadow: 0 4px 16px rgba(107, 83, 68, 0.12), 0 2px 8px rgba(107, 83, 68, 0.08);
     border: 1px solid var(--border-light);
+    -webkit-transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0;
+    -webkit-transform: translateY(30px);
     transform: translateY(30px);
     /* 桌面版硬體加速 */
     will-change: transform, opacity;
+    -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 }
 
 .drink-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 20px var(--hover-shadow);
+    -webkit-transform: translateY(-6px);
+    transform: translateY(-6px);
+    -webkit-box-shadow: 0 8px 32px rgba(107, 83, 68, 0.18), 0 4px 16px rgba(107, 83, 68, 0.12);
+    box-shadow: 0 8px 32px rgba(107, 83, 68, 0.18), 0 4px 16px rgba(107, 83, 68, 0.12);
     border-color: var(--border-coffee);
 }
 
@@ -604,5 +656,173 @@ body {
     /* 超大螢幕進一步優化 */
     .drink-card:nth-child(n+9) {
         animation-delay: 0.4s !important;
+    }
+}
+
+/* 瀏覽器兼容性支持 */
+
+/* 針對不支持 CSS Grid 的瀏覽器 */
+.no-grid .menu-grid {
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    margin: -16px;
+}
+
+.no-grid .drink-card {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 calc(50% - 32px);
+    flex: 0 0 calc(50% - 32px);
+    margin: 16px;
+    min-width: 280px;
+}
+
+/* IE11 專用修復 */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    .menu-grid {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+    }
+    
+    .drink-card {
+        -ms-flex: 0 0 calc(50% - 32px);
+        flex: 0 0 calc(50% - 32px);
+        margin: 16px;
+    }
+}
+
+/* Safari 專用修復 */
+@supports (-webkit-appearance: none) and (not (contain: paint)) {
+    .drink-card {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+}
+
+/* Firefox 專用修復 */
+@-moz-document url-prefix() {
+    .drink-card {
+        -moz-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+}
+
+/* 移動版 Safari 專用修復 */
+@supports (-webkit-touch-callout: none) {
+    .drink-card {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+/* 強制覆蓋系統深色模式 - 確保始終顯示淺色主題 */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* 重新定義所有顏色變數為淺色 */
+        --primary-white: #ffffff !important;
+        --soft-white: #fefefe !important;
+        --light-gray: #f8f9fa !important;
+        --warm-gray: #e9ecef !important;
+        --text-primary: #2c2c2c !important;
+        --text-secondary: #6c757d !important;
+        --text-light: #9c9c9c !important;
+        --accent-beige: #f7f3f0 !important;
+        --coffee-light: #f9f6f2 !important;
+        --coffee-soft: #f0ebe5 !important;
+        --coffee-warm: #e8ddd4 !important;
+        --coffee-medium: #d4c4b0 !important;
+        --coffee-dark: #a68b5b !important;
+        --coffee-text: #6b5344 !important;
+        --soft-shadow: rgba(107, 83, 68, 0.08) !important;
+        --hover-shadow: rgba(107, 83, 68, 0.15) !important;
+        --border-light: rgba(107, 83, 68, 0.08) !important;
+        --border-coffee: rgba(107, 83, 68, 0.12) !important;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        
+        /* 強制設定顏色模式 */
+        color-scheme: light !important;
+    }
+    
+    html, body {
+        color-scheme: light !important;
+        background-color: #ffffff !important;
+        color: #2c2c2c !important;
+    }
+    
+    /* 強制所有元素使用淺色背景 */
+    *, *::before, *::after {
+        color-scheme: light !important;
+    }
+    
+    /* 特別針對可能被深色模式影響的元素 */
+    .header {
+        background-color: #ffffff !important;
+        color: #6b5344 !important;
+    }
+    
+    .category-nav {
+        background-color: #f9f6f2 !important;
+    }
+    
+    .main {
+        background-color: #ffffff !important;
+    }
+    
+    .drink-card {
+        background-color: #ffffff !important;
+        color: #2c2c2c !important;
+    }
+    
+    .drink-info {
+        background-color: #ffffff !important;
+    }
+    
+    .drink-name {
+        color: #6b5344 !important;
+    }
+    
+    .drink-description {
+        color: #6c757d !important;
+    }
+    
+    .tag {
+        background-color: #f9f6f2 !important;
+        color: #6b5344 !important;
+    }
+    
+    /* 按鈕強制淺色 */
+    .tab-button, .subcategory-button {
+        background-color: transparent !important;
+        color: #6b5344 !important;
+    }
+    
+    .tab-button.active, .subcategory-button.active {
+        background-color: #d4c4b0 !important;
+        color: #ffffff !important;
+    }
+    
+    /* 圖片容器 */
+    .drink-image {
+        background-color: #f8f9fa !important;
+    }
+}
+
+/* 針對 WebKit 引擎（Safari/Chrome）的額外修復 */
+@media (prefers-color-scheme: dark) {
+    ::-webkit-scrollbar {
+        background-color: #f8f9fa !important;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background-color: #d4c4b0 !important;
     }
 }

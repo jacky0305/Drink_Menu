@@ -14,15 +14,71 @@ let subcategoryButtons = [];
 // 當前顯示的分類和子分類
 let currentCategory = 'coffee';
 let currentSubcategory = null;
+let isAnimating = false; // 防止動畫期間重複觸發
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
+    // 檢查瀏覽器支持
+    checkBrowserSupport();
+    
     // 先嘗試從本地 JSON 載入資料
     loadMenuFromLocal();
     
     // 設置滾動動畫觀察器
     setupScrollAnimations();
 });
+
+// 檢查瀏覽器支持
+function checkBrowserSupport() {
+    // 強制禁用深色模式
+    document.documentElement.style.colorScheme = 'light';
+    document.body.style.colorScheme = 'light';
+    
+    // 檢查 CSS Grid 支持
+    if (!CSS.supports('display', 'grid')) {
+        document.body.classList.add('no-grid');
+    }
+    
+    // 檢查 Intersection Observer 支持
+    if (!window.IntersectionObserver) {
+        // Polyfill 或 fallback
+        window.IntersectionObserver = function() {
+            return {
+                observe: function() {},
+                unobserve: function() {},
+                disconnect: function() {}
+            };
+        };
+    }
+    
+    // 檢查 requestAnimationFrame 支持
+    if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = function(callback) {
+            return setTimeout(callback, 16);
+        };
+    }
+    
+    // 監聽深色模式變化並強制覆蓋
+    if (window.matchMedia) {
+        const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const forceLightMode = () => {
+            document.documentElement.style.colorScheme = 'light';
+            document.body.style.colorScheme = 'light';
+            document.documentElement.style.setProperty('color-scheme', 'light', 'important');
+        };
+        
+        // 初始設定
+        forceLightMode();
+        
+        // 監聽變化
+        darkModeQuery.addListener(forceLightMode);
+        
+        // 現代瀏覽器語法
+        if (darkModeQuery.addEventListener) {
+            darkModeQuery.addEventListener('change', forceLightMode);
+        }
+    }
+}
 
 // 從本地 JSON 文件載入資料
 async function loadMenuFromLocal() {
@@ -37,8 +93,8 @@ async function loadMenuFromLocal() {
         // 生成分類按鈕
         renderCategories();
         
-        // 載入第一個分類的菜單
-        if (menuData.categories && menuData.categories.length > 0) {
+        // 載入第一個分類的菜單（只執行一次）
+        if (menuData.categories && menuData.categories.length > 0 && !isAnimating) {
             currentCategory = menuData.categories[0].id;
             const firstCategory = menuData.categories[0];
             
@@ -48,7 +104,14 @@ async function loadMenuFromLocal() {
                 renderSubcategories(currentCategory);
             }
             
+            // 初始載入不需要動畫
+            isAnimating = true;
             renderMenu(currentCategory, currentSubcategory);
+            
+            // 短暫延遲後啟用動畫功能
+            setTimeout(() => {
+                isAnimating = false;
+            }, 1000);
         }
         
         console.log('菜單資料已從 JSON 檔案載入');
@@ -118,7 +181,9 @@ function hideSubcategories() {
 
 // 切換分類
 function switchCategory(category) {
-    if (category === currentCategory) return;
+    if (category === currentCategory || isAnimating) return;
+    
+    isAnimating = true; // 設置動畫狀態
     
     // 更新按鈕狀態
     tabButtons.forEach(btn => btn.classList.remove('active'));
@@ -160,6 +225,11 @@ function switchCategory(category) {
                     
                     // 平滑滾動到頂部
                     scrollToTop();
+                    
+                    // 重置動畫狀態
+                    setTimeout(() => {
+                        isAnimating = false;
+                    }, 200);
                 });
             }, 150);
             
@@ -169,7 +239,9 @@ function switchCategory(category) {
 
 // 切換子分類
 function switchSubcategory(subcategory) {
-    if (subcategory === currentSubcategory) return;
+    if (subcategory === currentSubcategory || isAnimating) return;
+    
+    isAnimating = true; // 設置動畫狀態
     
     // 更新按鈕狀態
     subcategoryButtons.forEach(btn => btn.classList.remove('active'));
@@ -198,6 +270,11 @@ function switchSubcategory(subcategory) {
                 // 再次使用 requestAnimationFrame 確保淡出完全移除
                 requestAnimationFrame(() => {
                     menuGrid.classList.add('fade-in');
+                    
+                    // 重置動畫狀態
+                    setTimeout(() => {
+                        isAnimating = false;
+                    }, 150);
                 });
             }, 150);
             
@@ -207,6 +284,9 @@ function switchSubcategory(subcategory) {
 
 // 渲染菜單
 function renderMenu(categoryId, subcategoryId = null) {
+    // 如果正在動畫中，則不執行渲染
+    if (isAnimating && menuGrid.innerHTML !== '') return;
+    
     // 找到對應的分類
     const category = menuData.categories?.find(cat => cat.id === categoryId);
     let drinks = [];
@@ -226,12 +306,21 @@ function renderMenu(categoryId, subcategoryId = null) {
     // 先清空容器
     menuGrid.innerHTML = '';
     
+    // 檢查是否有飲品數據
+    if (drinks.length === 0) {
+        showErrorMessage('此分類暫無飲品資料');
+        return;
+    }
+    
     // 短暫延遲後開始渲染，避免閃爍
     setTimeout(() => {
-        menuGrid.innerHTML = drinks.map((drink, index) => `
+        menuGrid.innerHTML = drinks.map((drink, index) => {
+            const imageSrc = getImageSrc(drink.image);
+            return `
             <div class="drink-card" style="animation-delay: ${index * 0.1}s">
                 <div class="drink-image">
-                    <img src="${drink.image}" alt="${drink.name}" loading="lazy">
+                    <img src="${imageSrc}" alt="${drink.name}" loading="lazy" 
+                         onerror="handleImageError(this, '${imageSrc}')">
                 </div>
                 <div class="drink-info">
                     <h3 class="drink-name">${drink.name}</h3>
@@ -242,8 +331,8 @@ function renderMenu(categoryId, subcategoryId = null) {
                         </div>
                     ` : ''}
                 </div>
-            </div>
-        `).join('');
+            </div>`;
+        }).join('');
         
         // 設置卡片動畫
         setupCardAnimations();
@@ -309,7 +398,51 @@ function setupCardAnimations() {
     }, totalAnimationTime);
 }
 
-// 滾動動畫設置
+// 處理圖片路徑 - 支援本地圖片和 Unsplash 圖片混合使用
+function getImageSrc(imagePath) {
+    // 如果是本地圖片路徑（以 ./images/ 或 images/ 開頭），直接使用
+    if (imagePath.startsWith('./images/') || imagePath.startsWith('images/')) {
+        return imagePath;
+    }
+    
+    // 如果是相對路徑但不在 images 資料夾，假設是本地圖片
+    if (!imagePath.startsWith('http') && !imagePath.startsWith('//')) {
+        return `./images/${imagePath}`;
+    }
+    
+    // 否則是外部圖片（如 Unsplash），直接使用
+    return imagePath;
+}
+
+// 圖片錯誤處理 - 本地圖片載入失敗時的後備方案
+function handleImageError(img, originalSrc) {
+    // 如果是本地圖片載入失敗，嘗試使用預設的 Unsplash 圖片
+    if (originalSrc.startsWith('./images/') || originalSrc.startsWith('images/')) {
+        console.warn(`本地圖片載入失敗: ${originalSrc}，使用預設圖片`);
+        
+        // 根據圖片名稱判斷飲品類型，提供對應的預設圖片
+        let fallbackImage = 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&h=300&fit=crop&crop=center';
+        
+        if (originalSrc.includes('coffee') || originalSrc.includes('咖啡')) {
+            fallbackImage = 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&h=300&fit=crop&crop=center';
+        } else if (originalSrc.includes('tea') || originalSrc.includes('茶')) {
+            fallbackImage = 'https://images.unsplash.com/photo-1594631661960-69a83bbb5ddc?w=400&h=300&fit=crop&crop=center';
+        } else if (originalSrc.includes('milk') || originalSrc.includes('奶')) {
+            fallbackImage = 'https://images.unsplash.com/photo-1541544181051-e46607bc22a4?w=400&h=300&fit=crop&crop=center';
+        } else if (originalSrc.includes('alcohol') || originalSrc.includes('酒')) {
+            fallbackImage = 'https://images.unsplash.com/photo-1544824284-d7cb9ec2cc5c?w=400&h=300&fit=crop&crop=center';
+        }
+        
+        img.src = fallbackImage;
+        return;
+    }
+    
+    // 如果是外部圖片載入失敗，使用 Base64 SVG placeholder
+    img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+CjxwYXRoIGQ9Ik0yMDAgMTUwTDE3MCAyMDBIMjMwTDIwMCAxNTBaIiBmaWxsPSIjQ0NDIi8+CjxjaXJjbGUgY3g9IjE2MCIgY3k9IjEyMCIgcj0iMTAiIGZpbGw9IiNDQ0MiLz4KPC9zdmc+';
+    img.alt = '圖片載入失敗';
+}
+
+// 滾动動畫設置
 function setupScrollAnimations() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
