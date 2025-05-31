@@ -76,30 +76,30 @@ function switchCategory(category) {
     tabButtons.forEach(btn => btn.classList.remove('active'));
     document.querySelector(`[data-category="${category}"]`).classList.add('active');
     
-    // 加入淡出效果和加載狀態
+    // 移除之前的動畫類別
+    menuGrid.classList.remove('fade-in', 'loading');
+    
+    // 開始淡出動畫
     menuGrid.classList.add('fade-out');
     
+    // 等待淡出完成後開始載入
     setTimeout(() => {
-        // 顯示加載狀態
-        menuGrid.classList.add('loading');
-        
-        // 更新內容
+        // 更新當前分類
         currentCategory = category;
+        
+        // 渲染新內容
         renderMenu(category);
         
-        // 移除淡出效果，準備淡入
-        menuGrid.classList.remove('fade-out');
-        
-        // 短暫延遲後開始淡入動畫
+        // 短暫延遲後開始淡入
         setTimeout(() => {
-            menuGrid.classList.remove('loading');
+            menuGrid.classList.remove('fade-out');
             menuGrid.classList.add('fade-in');
             
             // 平滑滾動到頂部
             scrollToTop();
-        }, 100);
+        }, 150);
         
-    }, 300);
+    }, 500); // 等待淡出動畫完成
 }
 
 // 渲染菜單
@@ -143,17 +143,17 @@ function setupCardAnimations() {
     cards.forEach(card => {
         card.classList.remove('fade-in');
         card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
+        card.style.transform = 'translateY(40px)';
     });
     
-    // 依序顯示卡片
+    // 依序顯示卡片，時間更長
     cards.forEach((card, index) => {
         setTimeout(() => {
-            card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            card.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
             card.style.opacity = '1';
             card.style.transform = 'translateY(0)';
             card.classList.add('fade-in');
-        }, index * 150);
+        }, index * 200); // 延長間隔到 200ms
     });
     
     // 重新設置滾動觀察器
@@ -161,7 +161,7 @@ function setupCardAnimations() {
         if (window.observeCards) {
             window.observeCards();
         }
-    }, cards.length * 150 + 100);
+    }, cards.length * 200 + 200);
 }
 
 // 滾動動畫設置
