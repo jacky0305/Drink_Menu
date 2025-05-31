@@ -9,27 +9,12 @@
     --primary-white: #ffffff;
     --soft-white: #fefefe;
     --light-gray: #f8f9fa;
-    --warm-gra/* 飲品卡片 */
-.drink-card {
-    background: var(--primary-white);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 6px 24px rgba(139, 105, 20, 0.15);
-    border: 1px solid var(--coffee-light);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 0;
-    transform: translateY(30px);
-}
-
-.drink-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 36px rgba(139, 105, 20, 0.25);
-    border-color: var(--coffee-soft);
-}-text-primary: #2c2c2c;
+    --warm-gray: #e9ecef;
+    --text-primary: #2c2c2c;
     --text-secondary: #6c757d;
     --text-light: #9c9c9c;
     --accent-beige: #f7f3f0;
-    /* 日系咖啡廳色系 */
+    /* 日系咖啡廳色系 - 溫潤優雅 */
     --coffee-light: #f9f6f2;
     --coffee-soft: #f0ebe5;
     --coffee-warm: #e8ddd4;
@@ -37,8 +22,8 @@
     --coffee-dark: #a68b5b;
     --coffee-text: #6b5344;
     --soft-shadow: rgba(107, 83, 68, 0.08);
-    --hover-shadow: rgba(107, 83, 68, 0.12);
-    --border-light: rgba(0, 0, 0, 0.05);
+    --hover-shadow: rgba(107, 83, 68, 0.15);
+    --border-light: rgba(107, 83, 68, 0.08);
     --border-coffee: rgba(107, 83, 68, 0.12);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -206,8 +191,8 @@ body {
     background: var(--primary-white);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(139, 105, 20, 0.08);
-    border: 1px solid var(--coffee-light);
+    box-shadow: 0 2px 12px var(--soft-shadow);
+    border: 1px solid var(--border-light);
     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0;
     transform: translateY(30px);
@@ -215,8 +200,8 @@ body {
 
 .drink-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(139, 105, 20, 0.12);
-    border-color: var(--coffee-soft);
+    box-shadow: 0 6px 20px var(--hover-shadow);
+    border-color: var(--border-coffee);
 }
 
 .drink-card.fade-in {
@@ -280,12 +265,13 @@ body {
     font-size: 0.7rem;
     font-weight: 400;
     letter-spacing: 0.2px;
-    border: 1px solid var(--coffee-soft);
+    border: 1px solid var(--border-light);
     transition: var(--transition);
 }
 
 .tag:hover {
     background-color: var(--coffee-soft);
+    border-color: var(--border-coffee);
     transform: translateY(-1px);
 }
 
