@@ -130,6 +130,54 @@ body {
     font-weight: 500;
 }
 
+/* 子分類導航 */
+.subcategory-nav {
+    background-color: var(--coffee-soft);
+    padding: 16px 0;
+    border-bottom: 1px solid var(--coffee-warm);
+    position: sticky;
+    top: 88px; /* 主分類導航高度 + 一些間距 */
+    z-index: 99;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.subcategory-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.subcategory-button {
+    padding: 8px 16px;
+    background: var(--primary-white);
+    border: 1px solid var(--coffee-warm);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: var(--coffee-text);
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.subcategory-button:hover {
+    background-color: var(--coffee-light);
+    border-color: var(--coffee-medium);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(139, 105, 20, 0.1);
+}
+
+.subcategory-button.active {
+    background-color: var(--coffee-medium);
+    border-color: var(--coffee-dark);
+    color: var(--primary-white);
+    box-shadow: 0 2px 8px rgba(139, 105, 20, 0.2);
+}
+
 /* 主內容區域 */
 .main {
     padding: 60px 0;
@@ -144,6 +192,10 @@ body {
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 1;
     transform: translateY(0);
+    /* 桌面版硬體加速優化 */
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    perspective: 1000px;
 }
 
 /* 漸變動畫效果 */
@@ -196,6 +248,9 @@ body {
     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0;
     transform: translateY(30px);
+    /* 桌面版硬體加速 */
+    will-change: transform, opacity;
+    backface-visibility: hidden;
 }
 
 .drink-card:hover {
@@ -277,23 +332,33 @@ body {
 
 /* 動畫效果 */
 .fade-in {
-    animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-/* 載入動畫延遲 */
-.drink-card:nth-child(1) { animation-delay: 0.1s; }
-.drink-card:nth-child(2) { animation-delay: 0.2s; }
-.drink-card:nth-child(3) { animation-delay: 0.3s; }
-.drink-card:nth-child(4) { animation-delay: 0.4s; }
-.drink-card:nth-child(5) { animation-delay: 0.5s; }
-.drink-card:nth-child(6) { animation-delay: 0.6s; }
+/* 載入動畫延遲 - 桌面版優化 */
+.drink-card:nth-child(1) { animation-delay: 0.05s; }
+.drink-card:nth-child(2) { animation-delay: 0.1s; }
+.drink-card:nth-child(3) { animation-delay: 0.15s; }
+.drink-card:nth-child(4) { animation-delay: 0.2s; }
+.drink-card:nth-child(5) { animation-delay: 0.25s; }
+.drink-card:nth-child(6) { animation-delay: 0.3s; }
+.drink-card:nth-child(7) { animation-delay: 0.35s; }
+.drink-card:nth-child(8) { animation-delay: 0.4s; }
+.drink-card:nth-child(9) { animation-delay: 0.45s; }
+.drink-card:nth-child(10) { animation-delay: 0.5s; }
+.drink-card:nth-child(11) { animation-delay: 0.55s; }
+.drink-card:nth-child(12) { animation-delay: 0.6s; }
 
 /* 載入狀態動畫 - 日系簡潔風格 */
 .loading {
@@ -427,6 +492,21 @@ body {
         font-size: 0.7rem;
     }
     
+    /* 子分類響應式 */
+    .subcategory-nav {
+        padding: 12px 0;
+        top: 76px; /* 調整手機版的 sticky 位置 */
+    }
+    
+    .subcategory-tabs {
+        gap: 8px;
+    }
+    
+    .subcategory-button {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+    
     .main {
         padding: 40px 0;
     }
@@ -480,5 +560,49 @@ body {
     
     .drink-info {
         padding: 16px;
+    }
+}
+
+/* 大螢幕響應式優化 */
+@media (min-width: 1024px) {
+    .menu-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 40px;
+    }
+    
+    /* 桌面版動畫優化 - 更快的過渡 */
+    .menu-grid {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .drink-card {
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* 降低桌面版的動畫延遲，避免過長的載入時間 */
+    .drink-card:nth-child(n+7) {
+        animation-delay: 0.4s !important;
+    }
+    
+    .drink-card:nth-child(n+10) {
+        animation-delay: 0.5s !important;
+    }
+    
+    /* 桌面版 hover 效果優化 */
+    .drink-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 8px 25px var(--hover-shadow);
+    }
+}
+
+@media (min-width: 1440px) {
+    .menu-grid {
+        grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+        gap: 48px;
+    }
+    
+    /* 超大螢幕進一步優化 */
+    .drink-card:nth-child(n+9) {
+        animation-delay: 0.4s !important;
     }
 }

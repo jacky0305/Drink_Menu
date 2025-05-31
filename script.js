@@ -6,10 +6,14 @@ let menuData = {
 // DOM 元素
 const menuGrid = document.getElementById('menuGrid');
 const categoryTabs = document.getElementById('categoryTabs');
+const subcategoryNav = document.getElementById('subcategoryNav');
+const subcategoryTabs = document.getElementById('subcategoryTabs');
 let tabButtons = [];
+let subcategoryButtons = [];
 
-// 當前顯示的分類
+// 當前顯示的分類和子分類
 let currentCategory = 'coffee';
+let currentSubcategory = null;
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
@@ -36,7 +40,15 @@ async function loadMenuFromLocal() {
         // 載入第一個分類的菜單
         if (menuData.categories && menuData.categories.length > 0) {
             currentCategory = menuData.categories[0].id;
-            renderMenu(currentCategory);
+            const firstCategory = menuData.categories[0];
+            
+            // 如果有子分類，設置第一個子分類為當前子分類
+            if (firstCategory.subcategories && firstCategory.subcategories.length > 0) {
+                currentSubcategory = firstCategory.subcategories[0].id;
+                renderSubcategories(currentCategory);
+            }
+            
+            renderMenu(currentCategory, currentSubcategory);
         }
         
         console.log('菜單資料已從 JSON 檔案載入');
@@ -68,6 +80,42 @@ function renderCategories() {
     });
 }
 
+// 渲染子分類按鈕
+function renderSubcategories(categoryId) {
+    const category = menuData.categories?.find(cat => cat.id === categoryId);
+    
+    if (!category?.subcategories || category.subcategories.length === 0) {
+        hideSubcategories();
+        return;
+    }
+    
+    // 顯示子分類導航
+    subcategoryNav.style.display = 'block';
+    
+    // 生成子分類按鈕
+    subcategoryTabs.innerHTML = category.subcategories.map((subcategory, index) => `
+        <button class="subcategory-button ${index === 0 ? 'active' : ''}" 
+                data-subcategory="${subcategory.id}">
+            ${subcategory.name}
+        </button>
+    `).join('');
+    
+    // 重新獲取按鈕並綁定事件
+    subcategoryButtons = document.querySelectorAll('.subcategory-button');
+    subcategoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const subcategory = button.dataset.subcategory;
+            switchSubcategory(subcategory);
+        });
+    });
+}
+
+// 隱藏子分類導航
+function hideSubcategories() {
+    subcategoryNav.style.display = 'none';
+    currentSubcategory = null;
+}
+
 // 切換分類
 function switchCategory(category) {
     if (category === currentCategory) return;
@@ -75,6 +123,19 @@ function switchCategory(category) {
     // 更新按鈕狀態
     tabButtons.forEach(btn => btn.classList.remove('active'));
     document.querySelector(`[data-category="${category}"]`).classList.add('active');
+    
+    // 更新當前分類
+    currentCategory = category;
+    
+    // 生成子分類按鈕
+    const selectedCategory = menuData.categories?.find(cat => cat.id === category);
+    if (selectedCategory?.subcategories && selectedCategory.subcategories.length > 0) {
+        currentSubcategory = selectedCategory.subcategories[0].id;
+        renderSubcategories(category);
+    } else {
+        currentSubcategory = null;
+        hideSubcategories();
+    }
     
     // 移除之前的動畫類別
     menuGrid.classList.remove('fade-in', 'loading');
@@ -86,11 +147,8 @@ function switchCategory(category) {
         
         // 等待淡出完成後開始載入
         setTimeout(() => {
-            // 更新當前分類
-            currentCategory = category;
-            
             // 渲染新內容
-            renderMenu(category);
+            renderMenu(currentCategory, currentSubcategory);
             
             // 短暫延遲後開始淡入
             setTimeout(() => {
@@ -109,11 +167,61 @@ function switchCategory(category) {
     });
 }
 
+// 切換子分類
+function switchSubcategory(subcategory) {
+    if (subcategory === currentSubcategory) return;
+    
+    // 更新按鈕狀態
+    subcategoryButtons.forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[data-subcategory="${subcategory}"]`).classList.add('active');
+    
+    // 更新當前子分類
+    currentSubcategory = subcategory;
+    
+    // 移除之前的動畫類別
+    menuGrid.classList.remove('fade-in', 'loading');
+    
+    // 使用 requestAnimationFrame 確保瀏覽器重新計算樣式
+    requestAnimationFrame(() => {
+        // 開始淡出動畫
+        menuGrid.classList.add('fade-out');
+        
+        // 等待淡出完成後開始載入
+        setTimeout(() => {
+            // 渲染新內容
+            renderMenu(currentCategory, currentSubcategory);
+            
+            // 短暫延遲後開始淡入
+            setTimeout(() => {
+                menuGrid.classList.remove('fade-out');
+                
+                // 再次使用 requestAnimationFrame 確保淡出完全移除
+                requestAnimationFrame(() => {
+                    menuGrid.classList.add('fade-in');
+                });
+            }, 150);
+            
+        }, 300); // 子分類切換較快
+    });
+}
+
 // 渲染菜單
-function renderMenu(categoryId) {
+function renderMenu(categoryId, subcategoryId = null) {
     // 找到對應的分類
     const category = menuData.categories?.find(cat => cat.id === categoryId);
-    const drinks = category?.items || [];
+    let drinks = [];
+    
+    if (subcategoryId && category?.subcategories) {
+        // 如果有子分類，從子分類中獲取飲品
+        const subcategory = category.subcategories.find(sub => sub.id === subcategoryId);
+        drinks = subcategory?.items || [];
+    } else if (category?.items) {
+        // 如果沒有子分類，直接從分類中獲取飲品（向後兼容）
+        drinks = category.items;
+    } else if (category?.subcategories && category.subcategories.length > 0) {
+        // 如果有子分類但沒指定，取第一個子分類的飲品
+        drinks = category.subcategories[0]?.items || [];
+    }
     
     // 先清空容器
     menuGrid.innerHTML = '';
@@ -139,6 +247,9 @@ function renderMenu(categoryId) {
         
         // 設置卡片動畫
         setupCardAnimations();
+        
+        // 桌面版性能優化
+        optimizeDesktopPerformance();
     }, 50);
 }
 
@@ -146,29 +257,56 @@ function renderMenu(categoryId) {
 function setupCardAnimations() {
     const cards = document.querySelectorAll('.drink-card');
     
-    // 重置所有卡片狀態
-    cards.forEach(card => {
-        card.classList.remove('fade-in');
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(40px)';
-    });
+    // 檢測螢幕尺寸並調整動畫策略
+    const isDesktop = window.innerWidth >= 1024;
+    const isMobile = window.innerWidth <= 768;
     
-    // 依序顯示卡片，時間更長
-    cards.forEach((card, index) => {
-        setTimeout(() => {
-            card.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-            card.classList.add('fade-in');
-        }, index * 200); // 延長間隔到 200ms
-    });
+    if (isDesktop) {
+        // 桌面版使用 CSS 動畫類，更流暢
+        cards.forEach((card, index) => {
+            // 重置狀態
+            card.classList.remove('fade-in');
+            card.style.opacity = '';
+            card.style.transform = '';
+            card.style.transition = '';
+            
+            // 設置延遲並觸發動畫
+            const delay = Math.min(index * 100, 400);
+            setTimeout(() => {
+                card.classList.add('fade-in');
+            }, delay);
+        });
+    } else {
+        // 手機和平板版使用 JavaScript 動畫
+        let animationDelay = isMobile ? 150 : 120;
+        let maxDelay = isMobile ? 300 : 350;
+        
+        // 重置所有卡片狀態
+        cards.forEach(card => {
+            card.classList.remove('fade-in');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(40px)';
+        });
+        
+        // 依序顯示卡片
+        cards.forEach((card, index) => {
+            const delay = Math.min(index * animationDelay, maxDelay);
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, delay);
+        });
+    }
     
     // 重新設置滾動觀察器
+    const totalAnimationTime = isDesktop ? 500 : 600;
     setTimeout(() => {
         if (window.observeCards) {
             window.observeCards();
         }
-    }, cards.length * 200 + 200);
+    }, totalAnimationTime);
 }
 
 // 滾動動畫設置
@@ -250,4 +388,52 @@ function showErrorMessage(message) {
             <p>${message}</p>
         </div>
     `;
+}
+
+// 優化桌面版性能
+function optimizeDesktopPerformance() {
+    const isDesktop = window.innerWidth >= 1024;
+    
+    if (isDesktop) {
+        // 桌面版啟用硬體加速，但不修改已有的 transform
+        document.querySelectorAll('.drink-card').forEach(card => {
+            // 只有在沒有動畫進行時才設置硬體加速
+            if (card.style.opacity === '1') {
+                card.style.willChange = 'transform';
+            }
+        });
+        
+        // 減少桌面版的重繪
+        menuGrid.style.willChange = 'transform, opacity';
+        
+        // 延遲移除 will-change 屬性
+        setTimeout(() => {
+            menuGrid.style.willChange = 'auto';
+            document.querySelectorAll('.drink-card').forEach(card => {
+                card.style.willChange = 'auto';
+            });
+        }, 3000);
+    }
+}
+
+// 視窗大小改變時重新優化
+window.addEventListener('resize', debounce(() => {
+    const cards = document.querySelectorAll('.drink-card');
+    if (cards.length > 0) {
+        setupCardAnimations();
+        optimizeDesktopPerformance();
+    }
+}, 250));
+
+// 防抖函數
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
