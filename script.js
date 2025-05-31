@@ -79,27 +79,34 @@ function switchCategory(category) {
     // 移除之前的動畫類別
     menuGrid.classList.remove('fade-in', 'loading');
     
-    // 開始淡出動畫
-    menuGrid.classList.add('fade-out');
-    
-    // 等待淡出完成後開始載入
-    setTimeout(() => {
-        // 更新當前分類
-        currentCategory = category;
+    // 使用 requestAnimationFrame 確保瀏覽器重新計算樣式
+    requestAnimationFrame(() => {
+        // 開始淡出動畫
+        menuGrid.classList.add('fade-out');
         
-        // 渲染新內容
-        renderMenu(category);
-        
-        // 短暫延遲後開始淡入
+        // 等待淡出完成後開始載入
         setTimeout(() => {
-            menuGrid.classList.remove('fade-out');
-            menuGrid.classList.add('fade-in');
+            // 更新當前分類
+            currentCategory = category;
             
-            // 平滑滾動到頂部
-            scrollToTop();
-        }, 150);
-        
-    }, 500); // 等待淡出動畫完成
+            // 渲染新內容
+            renderMenu(category);
+            
+            // 短暫延遲後開始淡入
+            setTimeout(() => {
+                menuGrid.classList.remove('fade-out');
+                
+                // 再次使用 requestAnimationFrame 確保淡出完全移除
+                requestAnimationFrame(() => {
+                    menuGrid.classList.add('fade-in');
+                    
+                    // 平滑滾動到頂部
+                    scrollToTop();
+                });
+            }, 150);
+            
+        }, 500); // 等待淡出動畫完成
+    });
 }
 
 // 渲染菜單
