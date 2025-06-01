@@ -129,8 +129,8 @@ function resetRouletteWheel() {
     console.log('重置轉盤狀態');
 
     // 重置轉盤旋轉
-    rouletteSegments.style.transform = 'rotate(0deg)';
     rouletteSegments.style.transition = 'none';
+    rouletteSegments.style.transform = 'rotate(0deg)';
     rouletteSegments.classList.remove('spinning');
     isSpinning = false;
 
@@ -319,39 +319,45 @@ function startSpin() {
         spinText.textContent = '轉盤中...';
     }
 
-    // 添加轉動時的視覺效果
-    rouletteSegments.classList.add('spinning');
-
     // 清除之前的結果
     if (rouletteResult) {
         rouletteResult.innerHTML = '';
     }
 
+    // 首先重置轉盤到初始位置，確保每次都從0度開始
+    rouletteSegments.style.transition = 'none';
+    rouletteSegments.style.transform = 'rotate(0deg)';
+    
+    // 強制瀏覽器應用重置
+    rouletteSegments.offsetHeight;
+
     const segmentAngle = parseFloat(rouletteWheel.dataset.segmentAngle);
     
-    // 隨機選擇一個飲品
-    const randomDrinkIndex = Math.floor(Math.random() * drinks.length);
-    const selectedDrink = drinks[randomDrinkIndex];
-
-    // 計算轉盤需要轉到的角度
-    // 指針在正上方，所以我們需要讓選中的區段轉到正上方
-    const targetAngle = randomDrinkIndex * segmentAngle;
+    // 隨機生成最終停止角度（0-360度）
+    const randomFinalAngle = Math.random() * 360;
     
-    // 增加多圈旋轉讓動畫更有趣
+    // 增加多圈旋轉讓動畫更有趣，確保總是順時針旋轉
     const baseRotations = Math.floor(Math.random() * 3) + 4; // 4-6圈隨機
-    const totalRotation = 360 * baseRotations - targetAngle;
+    const totalRotation = 360 * baseRotations + randomFinalAngle;
+    
+    // 計算最終指針指向的區段
+    // 由於轉盤區段從-90度開始繪製（12點鐘方向），指針在0度位置
+    // 需要計算轉盤停止後指針指向的區段
+    const normalizedAngle = (360 - (randomFinalAngle % 360)) % 360;
+    const selectedDrinkIndex = Math.floor(normalizedAngle / segmentAngle) % drinks.length;
+    const selectedDrink = drinks[selectedDrinkIndex];
 
-    // 設置CSS變數並開始動畫
-    rouletteSegments.style.transition = 'transform 4s cubic-bezier(0.23, 1, 0.32, 1)';
+    // 設置過渡動畫並開始順時針旋轉
+    rouletteSegments.style.transition = 'transform 3s cubic-bezier(0.23, 1, 0.32, 1)';
     rouletteSegments.style.transform = `rotate(${totalRotation}deg)`;
 
     // 動畫完成後顯示結果
     setTimeout(() => {
         showRouletteResult(selectedDrink);
         resetSpinState();
-    }, 4000);
+    }, 3000);
 
-    console.log(`轉盤動畫已開始，選中的飲品: ${selectedDrink.name} (index: ${randomDrinkIndex})`);
+    console.log(`轉盤動畫已開始，選中的飲品: ${selectedDrink.name} (index: ${selectedDrinkIndex}), 區段角度: ${segmentAngle}°, 最終角度: ${randomFinalAngle}°, 總旋轉: ${totalRotation}°`);
 }
 
 // 重置轉盤轉動狀態
