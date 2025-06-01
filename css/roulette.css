@@ -1,0 +1,471 @@
+/* 轉盤功能樣式 */
+
+/* 轉盤按鈕 */
+.roulette-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 0.8rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.roulette-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.roulette-btn:active {
+    transform: translateY(0);
+}
+
+.roulette-icon {
+    font-size: 1.1em;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* 轉盤模態對話框 */
+.roulette-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.roulette-modal.show {
+    display: flex;
+}
+
+.roulette-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.roulette-container {
+    position: relative;
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.4s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* 轉盤標題 */
+.roulette-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.roulette-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.roulette-close {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #999;
+    cursor: pointer;
+    padding: 0.2rem;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.roulette-close:hover {
+    color: #666;
+}
+
+/* 轉盤主體 */
+.roulette-wheel-container {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+.roulette-wheel {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 8px solid #fff;
+}
+
+.roulette-pointer {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 30px solid #ff6b6b;
+    z-index: 10;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.roulette-segments {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 4s cubic-bezier(0.23, 1, 0.32, 1);
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.roulette-segments svg {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.roulette-segments path {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.roulette-segments path:hover {
+    opacity: 0.8;
+}
+
+.roulette-segments text {
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 轉盤控制按鈕 */
+.roulette-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.roulette-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.roulette-filter label {
+    font-weight: 500;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.roulette-filter-select {
+    padding: 0.5rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.roulette-filter-select:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.roulette-filter-select:hover {
+    border-color: #4CAF50;
+}
+
+.roulette-spin-btn {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+    transition: all 0.3s ease;
+}
+
+.roulette-spin-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+}
+
+.roulette-spin-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.spin-icon {
+    font-size: 1.2em;
+}
+
+/* 轉盤結果 */
+.roulette-result {
+    margin-top: 2rem;
+    text-align: center;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.result-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    animation: resultSlideIn 0.6s ease-out;
+}
+
+@keyframes resultSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.result-card h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.result-card p {
+    margin: 0;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+.result-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.result-tag {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    backdrop-filter: blur(10px);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .roulette-btn {
+        top: 0.5rem;
+        right: 0.5rem;
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .roulette-btn .roulette-text {
+        display: none;
+    }
+    
+    .roulette-container {
+        padding: 1.5rem;
+        margin: 1rem;
+        width: calc(100vw - 2rem);
+        max-width: none;
+    }
+    
+    .roulette-wheel {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .roulette-segment-content {
+        font-size: 0.7rem;
+        padding-left: 15px;
+    }
+    
+    .roulette-header h2 {
+        font-size: 1.3rem;
+    }
+    
+    .roulette-spin-btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .roulette-filter {
+        flex-direction: column;
+        gap: 0.3rem;
+        text-align: center;
+    }
+    
+    .roulette-filter label {
+        font-size: 0.85rem;
+    }
+    
+    .roulette-filter-select {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        width: 100%;
+        max-width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .roulette-wheel {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .roulette-segment-content {
+        font-size: 0.6rem;
+        padding-left: 10px;
+    }
+}
+
+/* 旋轉動畫 */
+.roulette-segments.spinning {
+    animation: spin 4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(var(--final-rotation, 1800deg));
+    }
+}
+
+/* 轉盤指針動畫 */
+.roulette-pointer {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 30px solid #ff6b6b;
+    z-index: 10;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    animation: pointerBounce 2s infinite;
+}
+
+@keyframes pointerBounce {
+    0%, 100% { 
+        transform: translateX(-50%) translateY(0); 
+    }
+    50% { 
+        transform: translateX(-50%) translateY(3px); 
+    }
+}
+
+/* 轉盤轉動時指針效果 */
+.roulette-wheel .roulette-segments.spinning + .roulette-pointer {
+    animation: pointerSpinning 0.1s infinite;
+}
+
+@keyframes pointerSpinning {
+    0%, 100% { 
+        transform: translateX(-50%) scale(1); 
+    }
+    50% { 
+        transform: translateX(-50%) scale(1.1); 
+    }
+}
+
+/* 按鈕載入動畫 */
+.roulette-spin-btn:disabled .spin-icon {
+    animation: spinIcon 1s linear infinite;
+}
+
+@keyframes spinIcon {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 結果卡片閃爍效果 */
+.result-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    animation: resultSlideIn 0.6s ease-out, resultGlow 2s ease-in-out;
+}
+
+@keyframes resultGlow {
+    0%, 100% {
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+    50% {
+        box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+    }
+}

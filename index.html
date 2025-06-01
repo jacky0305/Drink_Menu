@@ -15,6 +15,10 @@
         <div class="container">
             <h1 class="logo">家の飲品</h1>
             <p class="subtitle">Home Café Menu</p>
+            <button class="roulette-btn" id="rouletteBtn">
+                <span class="roulette-icon">🎯</span>
+                <span class="roulette-text">隨機選飲品</span>
+            </button>
         </div>
     </header>
 
@@ -41,6 +45,41 @@
             </div>
         </div>
     </main>
+
+    <!-- 轉盤模態對話框 -->
+    <div class="roulette-modal" id="rouletteModal">
+        <div class="roulette-overlay" id="rouletteOverlay"></div>
+        <div class="roulette-container">
+            <div class="roulette-header">
+                <h2>🎲 隨機選飲品</h2>
+                <button class="roulette-close" id="rouletteClose">×</button>
+            </div>
+            <div class="roulette-wheel-container">
+                <div class="roulette-wheel" id="rouletteWheel">
+                    <div class="roulette-segments" id="rouletteSegments">
+                        <!-- 轉盤區段將由 JavaScript 動態生成 -->
+                    </div>
+                    <div class="roulette-pointer"></div>
+                </div>
+            </div>
+            <div class="roulette-controls">
+                <div class="roulette-filter">
+                    <label for="rouletteFilter">選擇範圍：</label>
+                    <select id="rouletteFilter" class="roulette-filter-select">
+                        <option value="all">所有飲品</option>
+                        <!-- 分類選項將由 JavaScript 動態生成 -->
+                    </select>
+                </div>
+                <button class="roulette-spin-btn" id="rouletteSpinBtn">
+                    <span class="spin-icon">🎯</span>
+                    <span class="spin-text">開始轉盤</span>
+                </button>
+            </div>
+            <div class="roulette-result" id="rouletteResult">
+                <!-- 結果將在這裡顯示 -->
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

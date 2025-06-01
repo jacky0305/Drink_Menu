@@ -19,6 +19,9 @@
 /* 組件 */
 @import './css/components.css';
 
+/* 轉盤功能 */
+@import './css/roulette.css';
+
 /* 動畫 */
 @import './css/animations.css';
 
