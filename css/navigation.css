@@ -1,0 +1,117 @@
+/* 分類導航 */
+.category-nav {
+    background-color: var(--coffee-light);
+    padding: 20px 0;
+    border-bottom: 1px solid var(--coffee-soft);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
+.category-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.tab-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 16px;
+    background: none;
+    border: 2px solid transparent;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: var(--transition);
+    min-width: 70px;
+    font-family: inherit;
+}
+
+.tab-button:hover {
+    background-color: var(--primary-white);
+    border-color: var(--coffee-soft);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(139, 105, 20, 0.1);
+}
+
+.tab-button.active {
+    background-color: var(--primary-white);
+    border-color: var(--coffee-medium);
+    color: var(--coffee-text);
+    box-shadow: 0 2px 8px rgba(139, 105, 20, 0.15);
+}
+
+.tab-icon {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+}
+
+.tab-text {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+.tab-button.active .tab-text {
+    color: var(--coffee-text);
+    font-weight: 500;
+}
+
+/* 子分類導航 */
+.subcategory-nav {
+    background-color: var(--coffee-soft);
+    padding: 16px 0;
+    border-bottom: 1px solid var(--coffee-warm);
+    position: sticky;
+    top: 88px; /* 主分類導航高度 + 一些間距 */
+    z-index: 99;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.subcategory-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.subcategory-button {
+    padding: 8px 16px;
+    background: var(--primary-white);
+    border: 1px solid var(--coffee-warm);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: var(--coffee-text);
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.subcategory-button:hover {
+    background-color: var(--coffee-light);
+    border-color: var(--coffee-medium);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(139, 105, 20, 0.1);
+}
+
+.subcategory-button.active {
+    background-color: var(--coffee-medium);
+    border-color: var(--coffee-dark);
+    color: var(--primary-white);
+    box-shadow: 0 2px 8px rgba(139, 105, 20, 0.2);
+    font-weight: 500;
+}

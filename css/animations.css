@@ -1,0 +1,127 @@
+/* 動畫效果 */
+.fade-in {
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 0.9;
+    }
+}
+
+/* 載入動畫延遲 - 桌面版優化 */
+.drink-card:nth-child(1) { animation-delay: 0.05s; }
+.drink-card:nth-child(2) { animation-delay: 0.1s; }
+.drink-card:nth-child(3) { animation-delay: 0.15s; }
+.drink-card:nth-child(4) { animation-delay: 0.2s; }
+.drink-card:nth-child(5) { animation-delay: 0.25s; }
+.drink-card:nth-child(6) { animation-delay: 0.3s; }
+.drink-card:nth-child(7) { animation-delay: 0.35s; }
+.drink-card:nth-child(8) { animation-delay: 0.4s; }
+.drink-card:nth-child(9) { animation-delay: 0.45s; }
+.drink-card:nth-child(10) { animation-delay: 0.5s; }
+.drink-card:nth-child(11) { animation-delay: 0.55s; }
+.drink-card:nth-child(12) { animation-delay: 0.6s; }
+
+/* 載入狀態動畫 - 日系簡潔風格 */
+.loading {
+    position: relative;
+    background-color: var(--coffee-light);
+    opacity: 0.7;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* 錯誤訊息樣式 */
+.error-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+    grid-column: 1 / -1;
+    background-color: var(--coffee-light);
+    border-radius: 12px;
+    border: 1px solid var(--coffee-soft);
+}
+
+.error-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+    opacity: 0.6;
+}
+
+.error-message h3 {
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin-bottom: 8px;
+    color: var(--coffee-text);
+}
+
+.error-message p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    max-width: 350px;
+    margin: 0 auto;
+    color: var(--text-secondary);
+}
+
+/* 頁尾 */
+.footer {
+    background-color: var(--coffee-light);
+    padding: 30px 0;
+    text-align: center;
+    border-top: 1px solid var(--coffee-soft);
+}
+
+.footer p {
+    color: var(--coffee-text);
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+}
+
+/* 自定義滾動條 */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--coffee-light);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--coffee-medium);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--coffee-dark);
+}
+
+/* 選擇文字的顏色 */
+::selection {
+    background: var(--coffee-light);
+    color: var(--coffee-text);
+}
+
+::-moz-selection {
+    background: var(--coffee-light);
+    color: var(--coffee-text);
+}

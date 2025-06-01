@@ -1,0 +1,47 @@
+/* 基本重置和字體設定 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 防止跑版的額外重置 */
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px; /* 確保基礎字體大小 */
+    -webkit-text-size-adjust: 100%; /* 防止iOS自動調整字體 */
+    -ms-text-size-adjust: 100%;
+}
+
+/* 防止元素超出容器 */
+img, video, canvas, iframe, svg {
+    max-width: 100%;
+    height: auto;
+    box-sizing: border-box;
+}
+
+/* 確保所有文字元素不會造成橫向滾動 */
+h1, h2, h3, h4, h5, h6, p, span, div {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+/* 強制禁用深色模式 */
+:root {
+    color-scheme: light only;
+}
+
+html {
+    color-scheme: light;
+}
+
+body {
+    color-scheme: light;
+}

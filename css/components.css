@@ -1,0 +1,99 @@
+/* 飲品卡片 */
+.drink-card {
+    width: 100%;
+    min-width: 250px;
+    max-width: 400px;
+    margin: 0;
+    box-sizing: border-box;
+    
+    background: var(--primary-white);
+    border-radius: 12px;
+    overflow: hidden;
+    -webkit-box-shadow: 0 4px 16px rgba(107, 83, 68, 0.12), 0 2px 8px rgba(107, 83, 68, 0.08);
+    box-shadow: 0 4px 16px rgba(107, 83, 68, 0.12), 0 2px 8px rgba(107, 83, 68, 0.08);
+    border: 1px solid var(--border-light);
+    -webkit-transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+}
+
+.drink-card:hover {
+    -webkit-transform: translateY(-6px);
+    transform: translateY(-6px);
+    -webkit-box-shadow: 0 8px 32px rgba(107, 83, 68, 0.18), 0 4px 16px rgba(107, 83, 68, 0.12);
+    box-shadow: 0 8px 32px rgba(107, 83, 68, 0.18), 0 4px 16px rgba(107, 83, 68, 0.12);
+    border-color: var(--border-coffee);
+}
+
+.drink-card.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.drink-image {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+}
+
+.drink-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.drink-card:hover .drink-image img {
+    transform: scale(1.05);
+}
+
+.drink-info {
+    padding: 20px;
+    background-color: var(--primary-white);
+}
+
+.drink-name {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--coffee-text);
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+}
+
+.drink-description {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-weight: 300;
+}
+
+/* 飲品標籤 */
+.drink-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    background-color: var(--coffee-light);
+    color: var(--coffee-text);
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+    border: 1px solid var(--border-light);
+    transition: var(--transition);
+}
+
+.tag:hover {
+    background-color: var(--coffee-soft);
+    border-color: var(--border-coffee);
+    transform: translateY(-1px);
+}

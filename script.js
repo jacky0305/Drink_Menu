@@ -18,15 +18,139 @@ let isAnimating = false; // 防止動畫期間重複觸發
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded triggered');
+    
     // 檢查瀏覽器支持
     checkBrowserSupport();
+    
+    // 添加防跑版措施
+    preventLayoutIssues();
     
     // 先嘗試從本地 JSON 載入資料
     loadMenuFromLocal();
     
     // 設置滾動動畫觀察器
     setupScrollAnimations();
+    
+    // 添加調試信息
+    setTimeout(() => {
+        debugMenuDisplay();
+    }, 2000);
 });
+
+// 防止佈局問題
+function preventLayoutIssues() {
+    // 確保所有圖片都有 max-width
+    const style = document.createElement('style');
+    style.textContent = `
+        img { max-width: 100% !important; height: auto !important; }
+        .drink-card { max-width: 100% !important; overflow: hidden !important; }
+        .menu-grid { max-width: 100% !important; overflow: hidden !important; }
+        .container { max-width: 100% !important; overflow: hidden !important; }
+    `;
+    document.head.appendChild(style);
+    
+    // 添加手機版觸摸滾動支持
+    addMobileTouchSupport();
+    
+    // 監聽視窗大小改變
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            // 重新檢查佈局
+            checkLayout();
+            // 重新初始化觸摸滾動
+            addMobileTouchSupport();
+        }, 100);
+    });
+    
+    // 監聽滾動事件防止橫向滾動
+    window.addEventListener('scroll', function() {
+        if (window.scrollX > 0) {
+            window.scrollTo(0, window.scrollY);
+        }
+    });
+}
+
+// 添加手機版觸摸滾動支持
+function addMobileTouchSupport() {
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+        const categoryTabs = document.querySelector('.category-tabs');
+        const subcategoryTabs = document.querySelector('.subcategory-tabs');
+        
+        // 為分類標籤添加觸摸滾動
+        if (categoryTabs) {
+            categoryTabs.style.overflow = 'auto';
+            categoryTabs.style.webkitOverflowScrolling = 'touch';
+            categoryTabs.style.scrollbarWidth = 'none';
+            categoryTabs.style.msOverflowStyle = 'none';
+            
+            // 添加觸摸事件監聽
+            let isScrolling = false;
+            categoryTabs.addEventListener('touchstart', () => {
+                isScrolling = false;
+            });
+            
+            categoryTabs.addEventListener('touchmove', () => {
+                isScrolling = true;
+            });
+            
+            // 防止在滾動時觸發按鈕點擊
+            categoryTabs.addEventListener('touchend', (e) => {
+                if (isScrolling) {
+                    e.preventDefault();
+                }
+            });
+        }
+        
+        // 為子分類標籤添加觸摸滾動
+        if (subcategoryTabs) {
+            subcategoryTabs.style.overflow = 'auto';
+            subcategoryTabs.style.webkitOverflowScrolling = 'touch';
+            subcategoryTabs.style.scrollbarWidth = 'none';
+            subcategoryTabs.style.msOverflowStyle = 'none';
+            
+            // 添加觸摸事件監聽
+            let isScrolling = false;
+            subcategoryTabs.addEventListener('touchstart', () => {
+                isScrolling = false;
+            });
+            
+            subcategoryTabs.addEventListener('touchmove', () => {
+                isScrolling = true;
+            });
+            
+            // 防止在滾動時觸發按鈕點擊
+            subcategoryTabs.addEventListener('touchend', (e) => {
+                if (isScrolling) {
+                    e.preventDefault();
+                }
+            });
+        }
+    }
+}
+
+// 檢查佈局並修復問題
+function checkLayout() {
+    const body = document.body;
+    const scrollWidth = body.scrollWidth;
+    const clientWidth = body.clientWidth;
+    
+    if (scrollWidth > clientWidth) {
+        console.warn('檢測到橫向溢出，嘗試修復');
+        
+        // 找到可能造成溢出的元素
+        const elements = document.querySelectorAll('.drink-card, .menu-grid, .container, .category-tabs, .subcategory-tabs');
+        elements.forEach(el => {
+            el.style.maxWidth = '100%';
+            el.style.overflow = 'hidden';
+            el.style.boxSizing = 'border-box';
+        });
+    }
+}
 
 // 檢查瀏覽器支持
 function checkBrowserSupport() {
@@ -140,7 +264,15 @@ function renderCategories() {
             const category = button.dataset.category;
             switchCategory(category);
         });
+        
+        // 添加觸摸事件處理
+        button.addEventListener('touchstart', (e) => {
+            e.stopPropagation();
+        });
     });
+    
+    // 重新初始化觸摸滾動
+    addMobileTouchSupport();
 }
 
 // 渲染子分類按鈕
@@ -170,7 +302,15 @@ function renderSubcategories(categoryId) {
             const subcategory = button.dataset.subcategory;
             switchSubcategory(subcategory);
         });
+        
+        // 添加觸摸事件處理
+        button.addEventListener('touchstart', (e) => {
+            e.stopPropagation();
+        });
     });
+    
+    // 重新初始化觸摸滾動
+    addMobileTouchSupport();
 }
 
 // 隱藏子分類導航
@@ -284,8 +424,7 @@ function switchSubcategory(subcategory) {
 
 // 渲染菜單
 function renderMenu(categoryId, subcategoryId = null) {
-    // 如果正在動畫中，則不執行渲染
-    if (isAnimating && menuGrid.innerHTML !== '') return;
+    console.log('開始渲染菜單:', categoryId, subcategoryId);
     
     // 找到對應的分類
     const category = menuData.categories?.find(cat => cat.id === categoryId);
@@ -303,24 +442,27 @@ function renderMenu(categoryId, subcategoryId = null) {
         drinks = category.subcategories[0]?.items || [];
     }
     
+    console.log('找到飲品數據:', drinks);
+    
     // 先清空容器
     menuGrid.innerHTML = '';
     
     // 檢查是否有飲品數據
-    if (drinks.length === 0) {
-        showErrorMessage('此分類暫無飲品資料');
+    if (!drinks || drinks.length === 0) {
+        console.warn('沒有找到飲品數據');
+        menuGrid.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: #6c757d;">此分類暫無飲品資料</div>';
         return;
     }
     
-    // 短暫延遲後開始渲染，避免閃爍
-    setTimeout(() => {
-        menuGrid.innerHTML = drinks.map((drink, index) => {
+    // 立即渲染卡片
+    try {
+        const cardsHTML = drinks.map((drink, index) => {
             const imageSrc = getImageSrc(drink.image);
             return `
-            <div class="drink-card" style="animation-delay: ${index * 0.1}s">
+            <div class="drink-card" data-index="${index}" style="opacity: 0; transform: translateY(30px);">
                 <div class="drink-image">
                     <img src="${imageSrc}" alt="${drink.name}" loading="lazy" 
-                         onerror="handleImageError(this, '${imageSrc}')">
+                         onerror="handleImageError(this, '${drink.image}')">
                 </div>
                 <div class="drink-info">
                     <h3 class="drink-name">${drink.name}</h3>
@@ -334,68 +476,80 @@ function renderMenu(categoryId, subcategoryId = null) {
             </div>`;
         }).join('');
         
-        // 設置卡片動畫
-        setupCardAnimations();
+        menuGrid.innerHTML = cardsHTML;
+        console.log('卡片HTML已插入，數量:', drinks.length);
+        
+        // 短暫延遲後設置動畫
+        setTimeout(() => {
+            setupCardAnimations();
+        }, 50);
         
         // 桌面版性能優化
-        optimizeDesktopPerformance();
-    }, 50);
+        if (window.innerWidth >= 1024) {
+            optimizeDesktopPerformance();
+        }
+        
+    } catch (error) {
+        console.error('渲染菜單時發生錯誤:', error);
+        menuGrid.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: #d32f2f;">載入菜單時發生錯誤，請重新整理頁面</div>';
+    }
 }
 
 // 設置卡片動畫
 function setupCardAnimations() {
     const cards = document.querySelectorAll('.drink-card');
+    console.log('設置卡片動畫，卡片數量:', cards.length);
     
-    // 檢測螢幕尺寸並調整動畫策略
-    const isDesktop = window.innerWidth >= 1024;
-    const isMobile = window.innerWidth <= 768;
-    
-    if (isDesktop) {
-        // 桌面版使用 CSS 動畫類，更流暢
-        cards.forEach((card, index) => {
-            // 重置狀態
-            card.classList.remove('fade-in');
-            card.style.opacity = '';
-            card.style.transform = '';
-            card.style.transition = '';
-            
-            // 設置延遲並觸發動畫
-            const delay = Math.min(index * 100, 400);
-            setTimeout(() => {
-                card.classList.add('fade-in');
-            }, delay);
-        });
-    } else {
-        // 手機和平板版使用 JavaScript 動畫
-        let animationDelay = isMobile ? 150 : 120;
-        let maxDelay = isMobile ? 300 : 350;
-        
-        // 重置所有卡片狀態
-        cards.forEach(card => {
-            card.classList.remove('fade-in');
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(40px)';
-        });
-        
-        // 依序顯示卡片
-        cards.forEach((card, index) => {
-            const delay = Math.min(index * animationDelay, maxDelay);
-            
-            setTimeout(() => {
-                card.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, delay);
-        });
+    if (cards.length === 0) {
+        console.warn('沒有找到卡片元素');
+        return;
     }
     
-    // 重新設置滾動觀察器
-    const totalAnimationTime = isDesktop ? 500 : 600;
-    setTimeout(() => {
-        if (window.observeCards) {
-            window.observeCards();
-        }
-    }, totalAnimationTime);
+    // 檢測設備類型
+    const isMobile = window.innerWidth <= 768;
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    
+    // 重置所有卡片狀態
+    cards.forEach((card, index) => {
+        // 確保卡片可見
+        card.style.display = 'block';
+        card.style.visibility = 'visible';
+        
+        // 初始狀態
+        card.style.opacity = '0';
+        card.style.transform = isMobile ? 'translateY(20px)' : 'translateY(30px)';
+        card.style.transition = isMobile ? 
+            'opacity 0.4s ease, transform 0.4s ease' : 
+            'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        
+        // 計算延遲時間
+        const baseDelay = isMobile ? 100 : 150;
+        const maxDelay = isMobile ? 300 : 500;
+        const delay = Math.min(index * baseDelay, maxDelay);
+        
+        // 使用setTimeout顯示卡片
+        setTimeout(() => {
+            if (card && card.parentNode) { // 確保元素仍然存在
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+                
+                // 設置完成後清理will-change
+                setTimeout(() => {
+                    if (isMobile) {
+                        card.style.willChange = 'auto';
+                    }
+                }, 600);
+            }
+        }, delay);
+    });
+    
+    // 為桌面版啟用硬體加速
+    if (!isMobile && !isTouch) {
+        cards.forEach(card => {
+            card.style.willChange = 'transform, opacity';
+            card.style.backfaceVisibility = 'hidden';
+        });
+    }
 }
 
 // 處理圖片路徑 - 支援本地圖片和 Unsplash 圖片混合使用
@@ -416,6 +570,12 @@ function getImageSrc(imagePath) {
 
 // 圖片錯誤處理 - 本地圖片載入失敗時的後備方案
 function handleImageError(img, originalSrc) {
+    // 設置防跑版屬性
+    img.style.maxWidth = '100%';
+    img.style.height = 'auto';
+    img.style.objectFit = 'cover';
+    img.style.width = '100%';
+    
     // 如果是本地圖片載入失敗，嘗試使用預設的 Unsplash 圖片
     if (originalSrc.startsWith('./images/') || originalSrc.startsWith('images/')) {
         console.warn(`本地圖片載入失敗: ${originalSrc}，使用預設圖片`);
@@ -553,8 +713,27 @@ function optimizeDesktopPerformance() {
 window.addEventListener('resize', debounce(() => {
     const cards = document.querySelectorAll('.drink-card');
     if (cards.length > 0) {
+        // 重新檢查設備類型並調整布局
+        const isMobile = window.innerWidth <= 768;
+        const menuGrid = document.getElementById('menuGrid');
+        
+        // 重新設置Grid布局
+        if (menuGrid) {
+            if (isMobile) {
+                menuGrid.style.gridTemplateColumns = '1fr';
+            } else if (window.innerWidth <= 991) {
+                menuGrid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(260px, 1fr))';
+            } else {
+                menuGrid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+            }
+        }
+        
+        // 重新設置卡片動畫和性能優化
         setupCardAnimations();
         optimizeDesktopPerformance();
+        
+        // 修復可能的顯示問題
+        fixCardDisplay();
     }
 }, 250));
 
@@ -570,3 +749,121 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
+
+// 調試函數 - 檢查菜單顯示狀態
+function debugMenuDisplay() {
+    console.log('=== 菜單顯示調試信息 ===');
+    console.log('menuData:', menuData);
+    console.log('currentCategory:', currentCategory);
+    console.log('currentSubcategory:', currentSubcategory);
+    
+    const menuGrid = document.getElementById('menuGrid');
+    console.log('menuGrid element:', menuGrid);
+    console.log('menuGrid innerHTML length:', menuGrid?.innerHTML?.length || 0);
+    console.log('menuGrid children count:', menuGrid?.children?.length || 0);
+    
+    const cards = document.querySelectorAll('.drink-card');
+    console.log('找到的卡片數量:', cards.length);
+    
+    cards.forEach((card, index) => {
+        const style = window.getComputedStyle(card);
+        console.log(`卡片 ${index}:`, {
+            display: style.display,
+            visibility: style.visibility,
+            opacity: style.opacity,
+            transform: style.transform
+        });
+    });
+    
+    // 檢查CSS類
+    const gridClasses = menuGrid?.className || '';
+    console.log('menuGrid classes:', gridClasses);
+    
+    // 檢查瀏覽器支持
+    console.log('CSS Grid support:', CSS.supports('display', 'grid'));
+    console.log('Flexbox support:', CSS.supports('display', 'flex'));
+    console.log('Device info:', {
+        innerWidth: window.innerWidth,
+        isMobile: window.innerWidth <= 768,
+        isTouch: 'ontouchstart' in window
+    });
+    
+    console.log('=== 調試信息結束 ===');
+}
+
+// 修復函數 - 如果發現卡片沒有正確顯示，嘗試修復
+function fixCardDisplay() {
+    console.log('嘗試修復卡片顯示...');
+    
+    const cards = document.querySelectorAll('.drink-card');
+    const menuGrid = document.getElementById('menuGrid');
+    const isMobile = window.innerWidth <= 768;
+    
+    // 修復菜單網格顯示
+    if (menuGrid) {
+        menuGrid.style.display = 'grid';
+        
+        // 根據螢幕尺寸設置適當的Grid布局
+        if (isMobile) {
+            menuGrid.style.gridTemplateColumns = '1fr';
+            menuGrid.style.gap = '16px';
+        } else if (window.innerWidth <= 991) {
+            menuGrid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(260px, 1fr))';
+            menuGrid.style.gap = '20px';
+        } else {
+            menuGrid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+            menuGrid.style.gap = '24px';
+        }
+        
+        // 如果不支援Grid，使用Flexbox
+        if (!CSS.supports('display', 'grid')) {
+            menuGrid.style.display = 'flex';
+            menuGrid.style.flexWrap = 'wrap';
+            menuGrid.style.justifyContent = isMobile ? 'center' : 'space-between';
+        }
+    }
+    
+    // 修復每個卡片的顯示
+    cards.forEach((card, index) => {
+        // 強制設置基本樣式
+        card.style.display = 'block';
+        card.style.visibility = 'visible';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+        card.style.transition = 'all 0.3s ease';
+        
+        // 確保卡片在Grid中正確顯示
+        card.style.gridColumn = 'auto';
+        card.style.gridRow = 'auto';
+        
+        // 設置適當的寬度
+        if (isMobile) {
+            card.style.width = '100%';
+            card.style.maxWidth = '100%';
+            card.style.minWidth = 'unset';
+        } else {
+            card.style.width = '100%';
+            card.style.minWidth = window.innerWidth <= 991 ? '260px' : '280px';
+            card.style.maxWidth = '400px';
+        }
+        
+        // Flexbox 後備方案
+        if (!CSS.supports('display', 'grid')) {
+            if (isMobile) {
+                card.style.flex = '1 1 100%';
+                card.style.margin = '0 0 16px 0';
+            } else {
+                card.style.flex = '0 0 auto';
+                card.style.margin = '10px';
+            }
+        }
+    });
+    
+    console.log('修復完成，當前螢幕寬度:', window.innerWidth);
+    console.log('卡片數量:', cards.length);
+    console.log('Grid 支援:', CSS.supports('display', 'grid'));
+}
+
+// 暴露調試函數到全局作用域
+window.debugMenuDisplay = debugMenuDisplay;
+window.fixCardDisplay = fixCardDisplay;

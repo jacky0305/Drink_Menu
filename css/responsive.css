@@ -1,0 +1,577 @@
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 12px;
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .header {
+        padding: 20px 0 15px;
+    }
+    
+    .logo {
+        font-size: clamp(1.5rem, 4vw, 1.8rem);
+        letter-spacing: 1px;
+    }
+    
+    .subtitle {
+        font-size: 0.75rem;
+    }
+    
+    .category-nav {
+        padding: 12px 0;
+        position: relative; /* 在平板上移除 sticky */
+        top: auto; /* 重置 sticky 時的 top 值 */
+        overflow: hidden;
+    }
+    
+    .category-tabs {
+        display: flex;
+        gap: 6px;
+        justify-content: center; /* 保持置中對齊 */
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        padding: 0 12px;
+        scroll-snap-type: x mandatory;
+        white-space: nowrap;
+        width: 100%;
+        box-sizing: border-box;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+        /* 防止換行 */
+        flex-wrap: nowrap;
+    }
+    
+    .category-tabs::-webkit-scrollbar {
+        display: none;
+        height: 0;
+    }
+    
+    .tab-button {
+        padding: 8px 10px;
+        min-width: 60px;
+        max-width: 80px;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+        white-space: nowrap;
+        box-sizing: border-box;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .tab-icon {
+        font-size: 1.3rem;
+        margin-bottom: 3px;
+    }
+    
+    .tab-text {
+        font-size: 0.7rem;
+        line-height: 1.1;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* 子分類響應式 */
+    .subcategory-nav {
+        padding: 10px 0;
+        position: relative; /* 在平板上移除 sticky */
+        top: auto; /* 重置 sticky 時的 top 值 */
+        overflow: hidden;
+    }
+    
+    .subcategory-tabs {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        padding: 0 12px;
+        scroll-snap-type: x mandatory;
+        width: 100%;
+        box-sizing: border-box;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+        /* 防止換行 */
+        flex-wrap: nowrap;
+        white-space: nowrap;
+    }
+    
+    .subcategory-tabs::-webkit-scrollbar {
+        display: none;
+        height: 0;
+    }
+    
+    .subcategory-button {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+        white-space: nowrap;
+        scroll-snap-align: start;
+        box-sizing: border-box;
+        min-width: auto;
+        display: inline-block;
+        line-height: 1.2;
+    }
+    
+    .main {
+        padding: 30px 0;
+    }
+    
+    .menu-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        /* 移除硬體加速以提升兼容性 */
+        will-change: auto;
+    }
+    
+    .drink-card {
+        /* 確保卡片在小螢幕上不會太小 */
+        min-width: unset;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
+    
+    .drink-image {
+        height: 200px;
+    }
+    
+    .drink-info {
+        padding: 20px;
+    }
+    
+    .drink-name {
+        font-size: 1.2rem;
+    }
+    
+    .drink-description {
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 8px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .header {
+        padding: 15px 0 10px;
+    }
+    
+    .logo {
+        font-size: clamp(1.4rem, 5vw, 1.6rem);
+        margin-bottom: 4px;
+        letter-spacing: 0.5px;
+    }
+    
+    .subtitle {
+        font-size: 0.7rem;
+    }
+    
+    .category-nav {
+        padding: 8px 0;
+        position: relative; /* 確保在手機版移除 sticky */
+        top: auto; /* 重置 sticky 時的 top 值 */
+        overflow: hidden;
+        background-color: var(--coffee-light);
+    }
+    
+    .category-tabs {
+        display: flex;
+        gap: 4px;
+        justify-content: center; /* 保持置中對齊 */
+        padding: 0 8px 0 8px;
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+        /* 防止換行 */
+        flex-wrap: nowrap;
+        white-space: nowrap;
+    }
+    
+    /* 隱藏滾動條 */
+    .category-tabs::-webkit-scrollbar {
+        display: none;
+        height: 0;
+        width: 0;
+    }
+    
+    .tab-button {
+        min-width: 50px;
+        max-width: 70px;
+        padding: 8px 6px;
+        flex-shrink: 0;
+        flex-grow: 0;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        box-sizing: border-box;
+        border-radius: 12px;
+        /* 確保按鈕不會太小 */
+        height: auto;
+    }
+    
+    .tab-icon {
+        font-size: 1.1rem;
+        margin-bottom: 2px;
+        line-height: 1;
+    }
+    
+    .tab-text {
+        font-size: 0.6rem;
+        line-height: 1.1;
+        text-align: center;
+        word-break: keep-all;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* 子分類導航調整 */
+    .subcategory-nav {
+        padding: 6px 0;
+        position: relative; /* 確保在手機版移除 sticky */
+        top: auto; /* 重置 sticky 時的 top 值 */
+        overflow: hidden;
+        background-color: var(--coffee-soft);
+    }
+    
+    .subcategory-tabs {
+        display: flex;
+        gap: 4px;
+        padding: 0 8px;
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+        /* 防止換行 */
+        flex-wrap: nowrap;
+        white-space: nowrap;
+    }
+    
+    /* 隱藏子分類滾動條 */
+    .subcategory-tabs::-webkit-scrollbar {
+        display: none;
+        height: 0;
+        width: 0;
+    }
+    
+    .subcategory-button {
+        font-size: 0.7rem;
+        padding: 6px 12px;
+        flex-shrink: 0;
+        flex-grow: 0;
+        white-space: nowrap;
+        border-radius: 12px;
+        min-width: auto;
+        height: auto;
+        line-height: 1.2;
+        box-sizing: border-box;
+        display: inline-block;
+    }
+    
+    /* 主內容區間距調整 */
+    .main {
+        padding: 20px 0;
+    }
+    
+    .menu-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+    }
+    
+    .drink-card {
+        min-width: unset;
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+        box-sizing: border-box;
+        /* 修復可能的卡片顯示問題 */
+        overflow: hidden;
+    }
+    
+    /* 調整圖片高度 */
+    .drink-image {
+        height: 180px;
+        overflow: hidden;
+    }
+    
+    .drink-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    /* 調整內容間距 */
+    .drink-info {
+        padding: 12px;
+        box-sizing: border-box;
+    }
+    
+    .drink-name {
+        font-size: 1.1rem;
+        line-height: 1.3;
+        margin-bottom: 6px;
+    }
+    
+    .drink-description {
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+}
+
+/* 額外的極小屏幕保護 (320px 以下) */
+@media (max-width: 320px) {
+    .container {
+        padding: 0 6px;
+    }
+    
+    .category-tabs {
+        padding: 0 6px;
+        gap: 2px;
+    }
+    
+    .tab-button {
+        min-width: 45px;
+        max-width: 60px;
+        padding: 6px 4px;
+    }
+    
+    .tab-icon {
+        font-size: 1rem;
+    }
+    
+    .tab-text {
+        font-size: 0.55rem;
+    }
+    
+    .subcategory-tabs {
+        padding: 0 6px;
+        gap: 2px;
+    }
+    
+    .subcategory-button {
+        font-size: 0.65rem;
+        padding: 5px 8px;
+    }
+}
+
+/* 修復觸控設備的問題 */
+@media (hover: none) and (pointer: coarse) {
+    .drink-card:hover {
+        transform: none !important;
+        box-shadow: 0 4px 16px rgba(107, 83, 68, 0.12), 0 2px 8px rgba(107, 83, 68, 0.08) !important;
+    }
+    
+    .tab-button:hover {
+        transform: none !important;
+    }
+    
+    .subcategory-button:hover {
+        transform: none !important;
+    }
+    
+    .tag:hover {
+        transform: none !important;
+    }
+}
+
+/* 針對 iOS Safari 的特殊修復 */
+@supports (-webkit-touch-callout: none) {
+    .container {
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+    
+    .menu-grid {
+        width: calc(100vw - 20px) !important;
+        max-width: calc(100vw - 20px) !important;
+    }
+    
+    .drink-card {
+        max-width: calc(100vw - 40px) !important;
+    }
+}
+
+/* 針對 Android Chrome 的修復 */
+@media screen and (-webkit-min-device-pixel-ratio: 2) and (max-width: 768px) {
+    .category-tabs,
+    .subcategory-tabs {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        will-change: scroll-position;
+    }
+    
+    .drink-card {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+}
+
+/* 強制修復所有可能的橫向溢出 */
+@media (max-width: 768px) {
+    * {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    html, body {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    .container,
+    .menu-grid,
+    .drink-card,
+    .category-tabs,
+    .subcategory-tabs {
+        overflow-x: hidden !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+    
+    /* 確保圖片不會超出容器 */
+    .drink-image img {
+        max-width: 100% !important;
+        height: auto !important;
+        object-fit: cover !important;
+    }
+    
+    /* 確保文字不會超出容器 */
+    .drink-name,
+    .drink-description,
+    .tag {
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        max-width: 100% !important;
+    }
+}
+
+/* 強制覆蓋系統深色模式 - 確保始終顯示淺色主題 */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* 重新定義所有顏色變數為淺色 */
+        --primary-white: #ffffff !important;
+        --soft-white: #fefefe !important;
+        --light-gray: #f8f9fa !important;
+        --warm-gray: #e9ecef !important;
+        --text-primary: #2c2c2c !important;
+        --text-secondary: #6c757d !important;
+        --text-light: #9c9c9c !important;
+        --accent-beige: #f7f3f0 !important;
+        --coffee-light: #f9f6f2 !important;
+        --coffee-soft: #f0ebe5 !important;
+        --coffee-warm: #e8ddd4 !important;
+        --coffee-medium: #d4c4b0 !important;
+        --coffee-dark: #a68b5b !important;
+        --coffee-text: #6b5344 !important;
+        --soft-shadow: rgba(107, 83, 68, 0.08) !important;
+        --hover-shadow: rgba(107, 83, 68, 0.15) !important;
+        --border-light: rgba(107, 83, 68, 0.08) !important;
+        --border-coffee: rgba(107, 83, 68, 0.12) !important;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        
+        /* 強制設定顏色模式 */
+        color-scheme: light !important;
+    }
+    
+    html, body {
+        color-scheme: light !important;
+        background-color: #ffffff !important;
+        color: #2c2c2c !important;
+    }
+    
+    /* 強制所有元素使用淺色背景 */
+    *, *::before, *::after {
+        color-scheme: light !important;
+    }
+    
+    /* 特別針對可能被深色模式影響的元素 */
+    .header {
+        background-color: #ffffff !important;
+        color: #6b5344 !important;
+    }
+    
+    .category-nav {
+        background-color: #f9f6f2 !important;
+    }
+    
+    .main {
+        background-color: #ffffff !important;
+    }
+    
+    .drink-card {
+        background-color: #ffffff !important;
+        color: #2c2c2c !important;
+    }
+    
+    .drink-info {
+        background-color: #ffffff !important;
+    }
+    
+    .drink-name {
+        color: #6b5344 !important;
+    }
+    
+    .drink-description {
+        color: #6c757d !important;
+    }
+    
+    .tag {
+        background-color: #f9f6f2 !important;
+        color: #6b5344 !important;
+    }
+    
+    /* 按鈕強制淺色 */
+    .tab-button, .subcategory-button {
+        background-color: transparent !important;
+        color: #6b5344 !important;
+    }
+    
+    .tab-button.active, .subcategory-button.active {
+        background-color: #d4c4b0 !important;
+        color: #ffffff !important;
+    }
+    
+    /* 圖片容器 */
+    .drink-image {
+        background-color: #f8f9fa !important;
+    }
+}
+
+/* 針對 WebKit 引擎（Safari/Chrome）的額外修復 */
+@media (prefers-color-scheme: dark) {
+    ::-webkit-scrollbar {
+        background-color: #f8f9fa !important;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background-color: #d4c4b0 !important;
+    }
+}
